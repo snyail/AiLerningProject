@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+   python:
+    volumes:
+      - ./Project:/usr/src/Project
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: python_project
