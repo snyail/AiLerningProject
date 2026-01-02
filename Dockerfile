@@ -1,18 +1,20 @@
 FROM python:3
+USER root
 
-# アプリケーションディレクトリを作成する
-WORKDIR /usr/src/Project
+RUN apt-get update
+RUN apt-get -y install locales && \
+    localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP:ja
+ENV LC_ALL ja_JP.UTF-8
+ENV TZ JST-9
+ENV TERM xterm
+RUN apt-get install -y vim less
 
-# pipのアップデート
-RUN pip install --upgrade pip
+COPY requirements.txt ./
 
-# pipでインストールしたいモジュールをrequirements.txtに記述しておいて、
-# コンテナ内でpipにインストールさせる
-# requirements.txtの書き方は[pip freeze]コマンドから参考に出来る
-COPY ./Project/requirements.txt ./
+RUN pip install --upgrade pip==24.0
+RUN pip install --upgrade setuptools==69.5.1
 RUN pip install -r requirements.txt
 
-# アプリケーションコードをコンテナにコピー
-COPY . .
-
-CMD ["tail", "-f", "/dev/null"]
+# RUN pip install google-cloud-compute google-auth requests google-api-python-client configparser
